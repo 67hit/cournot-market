@@ -24,7 +24,7 @@ for (let i = 0; i < numPoints; i++) {
 const svg = d3.select("#myPlot")
   .append("svg")
   .append("g")
-  .attr("transform","translate(" + margin + "," + margin + ")");
+  .attr("transform",`translate(${margin},${margin})`);
 
 // X Axis
 const x = d3.scaleLinear()
@@ -32,7 +32,7 @@ const x = d3.scaleLinear()
   .range([0, xMax]);
 
 svg.append("g")
-  .attr("transform", "translate(0," + yMax + ")")
+  .attr("transform", `translate(0,${yMax})`)
   .call(d3.axisBottom(x));
 
 // Y Axis
