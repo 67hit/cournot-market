@@ -2,13 +2,17 @@
 <html>
 <script src="https://d3js.org/d3.v7.min.js"></script>
 <body>
-<h2>D3.js Scatter-Plot</h2>
+<h2>Cournot Market</h2>
 <svg id="myPlot" style="width:600px;height:600px"></svg>
 </body>
 <script>
+
+// M - c
+const MAX = 600
+
 // Set Dimensions
-const xSize = 600;
-const ySize = 600;
+const xSize = MAX;
+const ySize = MAX;
 const margin = 50;
 const xMax = xSize - margin*2;
 const yMax = ySize - margin*2;
@@ -34,7 +38,7 @@ const svg = d3.select("#myPlot")
   .append("g")
   .attr("transform",`translate(${margin},${margin})`);
 
-// X Axis
+// X Axis scaling function
 const x = d3.scaleLinear()
   .domain([0, xSize])
   .range([0, xMax]);
@@ -43,7 +47,7 @@ svg.append("g")
   .attr("transform", `translate(0,${yMax})`)
   .call(d3.axisBottom(x));
 
-// Y Axis
+// Y Axis scaling function
 const y = d3.scaleLinear()
   .domain([0, ySize])
   .range([ yMax, 0]);
@@ -56,11 +60,12 @@ svg.append('g')
   .selectAll("dot")
   .data(data).enter()
   .append("circle")
-  .attr("cx", function (d) { return d[0] } )
-  .attr("cy", function (d) { return d[1] } )
+  .attr("cx", d => d[0] )
+  .attr("cy", d => d[1] )
   .attr("r", 3)
   .style("fill", "Red");
 
+// Two crossing lines
 svg.append("path")
     .attr("fill", "none")
     .attr("stroke", "steelblue")
@@ -72,5 +77,7 @@ svg.append("path")
     .attr("stroke", "orange")
     .attr("stroke-width", 1.5)
     .attr("d", line(data2));
+
+const next_point = function(point) { return [0.25*(MAX+point[0]),0.25*(MAX+point[1])]; };
 </script>
 </html>
