@@ -25,32 +25,47 @@ const line = d3.line()
 const data1 = [[0,300],[600,0]]
 const data2 = [[0,600],[300,0]]
 
-// Create Random Points
-const numPoints = 1;
-const data = [];
-for (let i = 0; i < numPoints; i++) {
-  data.push([Math.random() * xMax, Math.random() * yMax]);
-}
-
-// Append SVG Object to the Page
-const svg = d3.select("#myPlot")
-  .append("svg")
-  .append("g")
-  .attr("transform",`translate(${margin},${margin})`);
-
 // X Axis scaling function
 const x = d3.scaleLinear()
   .domain([0, xSize])
   .range([0, xMax]);
 
-svg.append("g")
-  .attr("transform", `translate(0,${yMax})`)
-  .call(d3.axisBottom(x));
+const xinv = d3.scaleLinear()
+  .domain([0, xMax])
+  .range([0, xSize]);
+
 
 // Y Axis scaling function
 const y = d3.scaleLinear()
   .domain([0, ySize])
-  .range([ yMax, 0]);
+  .range([yMax, 0]);
+
+  const yinv = d3.scaleLinear()
+  .domain([yMax, 0])
+  .range([0, ySize]);
+
+const next_point = point => [0.5*(MAX-point[1]),0.5*(MAX-point[0])];
+
+// Create Random Points
+const numPoints = 10;
+const data = [];
+point = [Math.random() * MAX, Math.random() * MAX]
+console.log(point)
+for (let i = 0; i < numPoints; i++) {
+  data.push(point);
+  point = next_point(point)
+}
+
+// Append SVG Object to the Page
+const svg = d3.select("#myPlot")
+  .append("svg")
+  .attr("id", "chart")
+  .append("g")
+  .attr("transform",`translate(${margin},${margin})`);
+
+svg.append("g")
+  .attr("transform", `translate(0,${yMax})`)
+  .call(d3.axisBottom(x));
 
 svg.append("g")
   .call(d3.axisLeft(y));
@@ -60,24 +75,39 @@ svg.append('g')
   .selectAll("dot")
   .data(data).enter()
   .append("circle")
-  .attr("cx", d => d[0] )
-  .attr("cy", d => d[1] )
+  .attr("cx", d => x(d[0]) )
+  .attr("cy", d => y(d[1]) )
   .attr("r", 3)
   .style("fill", "Red");
 
 // Two crossing lines
 svg.append("path")
+    .datum(data1)
     .attr("fill", "none")
     .attr("stroke", "steelblue")
     .attr("stroke-width", 1.5)
-    .attr("d", line(data1));
+    .attr("d", line);
 
 svg.append("path")
+    .datum(data2)
     .attr("fill", "none")
     .attr("stroke", "orange")
     .attr("stroke-width", 1.5)
-    .attr("d", line(data2));
+    .attr("d", line);
 
-const next_point = function(point) { return [0.25*(MAX+point[0]),0.25*(MAX+point[1])]; };
+
+svg.append("path")
+    .datum(data)
+    .attr("fill", "none")
+    .attr("stroke", "red")
+    .attr("stroke-width", 1.5)
+    .attr("d", line);
+
+d3.select("#myPlot")
+  .on('click', function(event)
+    { var pos = d3.pointer(event,"#chart");
+      console.log(pos);
+    });
+
 </script>
 </html>
