@@ -75,6 +75,8 @@ svg.append("path")
     .attr("stroke-width", 1.5)
     .attr("d", line);
 
+length = (path) => d3.create("svg:path").attr("d", path).node().getTotalLength()
+
 const drawPath = function(point) {
     var data = []
     for (let i = 0; i < 10; i++) {
@@ -82,14 +84,20 @@ const drawPath = function(point) {
       point = next_point(point)
     }
 
+    var l = length(line(data));
+
     svg.append("path")
       .datum(data)
       .attr("fill", "none")
       .attr("stroke", "red")
       .attr("stroke-width", 1)
+      .attr("class","convergence")
+      .attr("stroke-dasharray", `0,${l}`)
       .attr("d", line)
-      .attr("class","convergence");
-
+    .transition()
+      .duration(2000)
+      .ease(d3.easeLinear)
+      .attr("stroke-dasharray", `${l},${l}`);
     // Dots
     svg.append('g')
       .selectAll("dot")
