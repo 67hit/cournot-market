@@ -2,7 +2,6 @@
 <html>
 <script src="https://d3js.org/d3.v7.min.js"></script>
 <body>
-<h2>Cournot Market</h2>
 <svg id="myPlot" style="width:600px;height:600px"></svg>
 </body>
 <script>
@@ -48,13 +47,8 @@ const next_point = point => [0.5*(MAX-point[1]),0.5*(MAX-point[0])];
 
 // Create Random Points
 const numPoints = 10;
-const data = [];
-point = [Math.random() * MAX, Math.random() * MAX]
-console.log(point)
-for (let i = 0; i < numPoints; i++) {
-  data.push(point);
-  point = next_point(point)
-}
+
+
 
 // Append SVG Object to the Page
 const svg = d3.select("#myPlot")
@@ -70,15 +64,7 @@ svg.append("g")
 svg.append("g")
   .call(d3.axisLeft(y));
 
-// Dots
-svg.append('g')
-  .selectAll("dot")
-  .data(data).enter()
-  .append("circle")
-  .attr("cx", d => x(d[0]) )
-  .attr("cy", d => y(d[1]) )
-  .attr("r", 3)
-  .style("fill", "Red");
+
 
 // Two crossing lines
 svg.append("path")
@@ -96,17 +82,46 @@ svg.append("path")
     .attr("d", line);
 
 
-svg.append("path")
-    .datum(data)
-    .attr("fill", "none")
-    .attr("stroke", "red")
-    .attr("stroke-width", 1.5)
-    .attr("d", line);
 
 d3.select("#myPlot")
   .on('click', function(event)
-    { var pos = d3.pointer(event,"#chart");
-      console.log(pos);
+    { var pos = d3.pointer(event,"#myPlot");
+      point = [x.invert(pos[0]-margin-8),y.invert(pos[1]-margin-8)];
+      console.log(point)
+      if(point[0] < 0 | point[0] > MAX | point[1] < 0 | point[1] > 600)
+      {
+        return;
+      }
+
+    d3.select("#conv-line").remove()
+    d3.selectAll(".conv-dots").remove()
+
+    var data = []
+    for (let i = 0; i < numPoints; i++) {
+      data.push(point);
+      point = next_point(point)
+    }
+
+    svg.append("path")
+      .datum(data)
+      .attr("fill", "none")
+      .attr("stroke", "red")
+      .attr("stroke-width", 1)
+      .attr("d", line)
+      .attr("id","conv-line");
+
+    // Dots
+    svg.append('g')
+      .selectAll("dot")
+      .data(data).enter()
+      .append("circle")
+      .attr("cx", d => x(d[0]) )
+      .attr("cy", d => y(d[1]) )
+      .attr("r", 4)
+      .style("fill", "none")
+      .style("stroke", "red")
+      .attr("class","conv-dots");
+
     });
 
 </script>
