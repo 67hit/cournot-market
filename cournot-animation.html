@@ -1,11 +1,12 @@
 <!DOCTYPE html>
 <html>
+<head>
 <script src="https://d3js.org/d3.v7.min.js"></script>
+</head>
 <body>
 <svg id="myPlot" style="width:600px;height:600px"></svg>
-</body>
-<script>
 
+<script>
 // M - c
 const MAX = 600
 
@@ -45,11 +46,6 @@ const y = d3.scaleLinear()
 
 const next_point = point => [0.5*(MAX-point[1]),0.5*(MAX-point[0])];
 
-// Create Random Points
-const numPoints = 10;
-
-
-
 // Append SVG Object to the Page
 const svg = d3.select("#myPlot")
   .append("svg")
@@ -63,8 +59,6 @@ svg.append("g")
 
 svg.append("g")
   .call(d3.axisLeft(y));
-
-
 
 // Two crossing lines
 svg.append("path")
@@ -81,23 +75,9 @@ svg.append("path")
     .attr("stroke-width", 1.5)
     .attr("d", line);
 
-
-
-d3.select("#myPlot")
-  .on('click', function(event)
-    { var pos = d3.pointer(event,"#myPlot");
-      point = [x.invert(pos[0]-margin-8),y.invert(pos[1]-margin-8)];
-      console.log(point)
-      if(point[0] < 0 | point[0] > MAX | point[1] < 0 | point[1] > 600)
-      {
-        return;
-      }
-
-    d3.select("#conv-line").remove()
-    d3.selectAll(".conv-dots").remove()
-
+const drawPath = function(point) {
     var data = []
-    for (let i = 0; i < numPoints; i++) {
+    for (let i = 0; i < 10; i++) {
       data.push(point);
       point = next_point(point)
     }
@@ -108,7 +88,7 @@ d3.select("#myPlot")
       .attr("stroke", "red")
       .attr("stroke-width", 1)
       .attr("d", line)
-      .attr("id","conv-line");
+      .attr("class","convergence");
 
     // Dots
     svg.append('g')
@@ -120,9 +100,23 @@ d3.select("#myPlot")
       .attr("r", 4)
       .style("fill", "none")
       .style("stroke", "red")
-      .attr("class","conv-dots");
+      .attr("class","convergence");
+}
 
+d3.select("#myPlot")
+  .on('click', function(event)
+    { var pos = d3.pointer(event,"#myPlot");
+      var start = [x.invert(pos[0]-margin-8),y.invert(pos[1]-margin-8)];
+
+      if(start[0] < 0 | start[0] > MAX | start[1] < 0 | start[1] > MAX)
+      {
+        return;
+      }
+
+      d3.selectAll(".convergence").remove()
+      drawPath(start);
     });
 
 </script>
+</body>
 </html>
