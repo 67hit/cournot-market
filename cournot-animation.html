@@ -7,6 +7,9 @@
 <svg id="myPlot" style="width:600px;height:600px"></svg>
 
 <script>
+animDuration = 4000 //milliseconds
+
+
 // M - c
 const MAX = 600
 
@@ -55,10 +58,10 @@ const svg = d3.select("#myPlot")
 
 svg.append("g")
   .attr("transform", `translate(0,${yMax})`)
-  .call(d3.axisBottom(x));
+  .call(d3.axisBottom(x).tickFormat(""));
 
 svg.append("g")
-  .call(d3.axisLeft(y));
+  .call(d3.axisLeft(y).tickFormat(""));
 
 // Two crossing lines
 svg.append("path")
@@ -79,14 +82,14 @@ length = (path) => d3.create("svg:path").attr("d", path).node().getTotalLength()
 
 const drawPath = function(point) {
   var data = [];
-  var cumulativeLength = [];
+  var cumulLen = [];
   for (let i = 0; i < 10; i++) {
     data.push(point);
     point = next_point(point);
-    cumulativeLength.push(length(line(data)));
+    cumulLen.push(length(line(data)));
   }
 
-  var l = length(line(data));
+  var totalLen = length(line(data));
 
   // Draw the red path
   const path = svg.append("path")
@@ -95,14 +98,14 @@ const drawPath = function(point) {
     .attr("stroke", "red")
     .attr("stroke-width", 1)
     .attr("class", "convergence")
-    .attr("stroke-dasharray", `0,${l}`)
+    .attr("stroke-dasharray", `0,${totalLen}`)
     .attr("d", line);
 
   // Animate the path drawing
   path.transition()
-    .duration(2000)
+    .duration(animDuration)
     .ease(d3.easeLinear)
-    .attr("stroke-dasharray", `${l},${l}`);
+    .attr("stroke-dasharray", `${totalLen},${totalLen}`);
 
   // Animate points appearing along the path
   const circles = svg.append('g')
@@ -118,7 +121,7 @@ const drawPath = function(point) {
     .attr("class", "convergence");
 
   circles.transition()
-    .delay((d, i) => cumulativeLength[i]*1900/l) // Adjust for timing
+    .delay((d, i) => animDuration * cumulLen[i]/totalLen) // Adjust for timing
     .duration(300)
     .attr("r", 4);
 }
