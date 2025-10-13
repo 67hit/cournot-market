@@ -79,9 +79,11 @@ length = (path) => d3.create("svg:path").attr("d", path).node().getTotalLength()
 
 const drawPath = function(point) {
   var data = [];
+  var cumulativeLength = [];
   for (let i = 0; i < 10; i++) {
     data.push(point);
     point = next_point(point);
+    cumulativeLength.push(length(line(data)));
   }
 
   var l = length(line(data));
@@ -116,7 +118,7 @@ const drawPath = function(point) {
     .attr("class", "convergence");
 
   circles.transition()
-    .delay((d, i) => i * 200) // Adjust for timing
+    .delay((d, i) => cumulativeLength[i]*1900/l) // Adjust for timing
     .duration(300)
     .attr("r", 4);
 }
