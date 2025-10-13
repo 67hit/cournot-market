@@ -78,38 +78,50 @@ svg.append("path")
 length = (path) => d3.create("svg:path").attr("d", path).node().getTotalLength()
 
 const drawPath = function(point) {
-    var data = []
-    for (let i = 0; i < 10; i++) {
-      data.push(point);
-      point = next_point(point)
-    }
+  var data = [];
+  for (let i = 0; i < 10; i++) {
+    data.push(point);
+    point = next_point(point);
+  }
 
-    var l = length(line(data));
+  var l = length(line(data));
 
-    svg.append("path")
-      .datum(data)
-      .attr("fill", "none")
-      .attr("stroke", "red")
-      .attr("stroke-width", 1)
-      .attr("class","convergence")
-      .attr("stroke-dasharray", `0,${l}`)
-      .attr("d", line)
-    .transition()
-      .duration(2000)
-      .ease(d3.easeLinear)
-      .attr("stroke-dasharray", `${l},${l}`);
-    // Dots
-    svg.append('g')
-      .selectAll("dot")
-      .data(data).enter()
-      .append("circle")
-      .attr("cx", d => x(d[0]) )
-      .attr("cy", d => y(d[1]) )
-      .attr("r", 4)
-      .style("fill", "none")
-      .style("stroke", "red")
-      .attr("class","convergence");
+  // Draw the red path
+  const path = svg.append("path")
+    .datum(data)
+    .attr("fill", "none")
+    .attr("stroke", "red")
+    .attr("stroke-width", 1)
+    .attr("class", "convergence")
+    .attr("stroke-dasharray", `0,${l}`)
+    .attr("d", line);
+
+  // Animate the path drawing
+  path.transition()
+    .duration(2000)
+    .ease(d3.easeLinear)
+    .attr("stroke-dasharray", `${l},${l}`);
+
+  // Animate points appearing along the path
+  const circles = svg.append('g')
+    .selectAll("circle")
+    .data(data)
+    .enter()
+    .append("circle")
+    .attr("cx", d => x(d[0]))
+    .attr("cy", d => y(d[1]))
+    .attr("r", 0)
+    .style("fill", "none")
+    .style("stroke", "red")
+    .attr("class", "convergence");
+
+  circles.transition()
+    .delay((d, i) => i * 200) // Adjust for timing
+    .duration(300)
+    .attr("r", 4);
 }
+
+
 
 d3.select("#myPlot")
   .on('click', function(event)
