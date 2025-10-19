@@ -68,14 +68,14 @@ svg.append("text")
     .text("((M-c)/3, (M-c)/3)");
 
 
-svg.append("text").text("q2")      .attr("x",-30).attr("y",  6).attr("style","font-weight:bold");
+svg.append("text").text("q2")      .attr("x",-12).attr("y",-17).attr("style","font-weight:bold");
 svg.append("text").text("M-c")     .attr("x",-40).attr("y", 38);
 svg.append("text").text("(M-c)/2") .attr("x",-65).attr("y",248);
-svg.append("text").text("q1")      .attr("x",440).attr("y",474).attr("style","font-weight:bold");
+svg.append("text").text("q1")      .attr("x",465).attr("y",455).attr("style","font-weight:bold");
 svg.append("text").text("M-c")     .attr("x",400).attr("y",474);
 svg.append("text").text("(M-c)/2") .attr("x",180).attr("y",474);
-svg.append("text").text("B1")      .attr("x", 40).attr("y",100).attr("style","font-weight:bold");
-svg.append("text").text("B2")      .attr("x",350).attr("y",410).attr("style","font-weight:bold");
+svg.append("text").text("B1(q2)")  .attr("x", 40).attr("y",100).attr("style","font-weight:bold");
+svg.append("text").text("B2(q1)")  .attr("x",350).attr("y",410).attr("style","font-weight:bold");
 
 
 
@@ -144,8 +144,9 @@ const drawPath = function(point) {
     .duration(300)
     .attr("r", 4);
 
-  const limit = svg.append("text").text("((M-c)/3,(M-c)/3)").attr("x",160)
+  const limit = svg.append("text").text("((M-c)/3, (M-c)/3)").attr("x",160)
                    .attr("y",310).attr("class","convergence").style("opacity",0)
+                   .style("font-size", "x-large")
 
   limit.transition()
        .duration(animDuration*1.0)
