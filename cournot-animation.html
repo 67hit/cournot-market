@@ -4,19 +4,20 @@
 <script src="https://d3js.org/d3.v7.min.js"></script>
 </head>
 <body>
-<svg id="myPlot" style="width:600px;height:600px"></svg>
+<svg id="myPlot" style="width:650px;height:650px"></svg>
 
 <script>
 animDuration = 4000 //milliseconds
 
 
 // M - c
-const MAX = 600
+const MAX = 650
+const maxVal = 600
 
 // Set Dimensions
 const xSize = MAX;
 const ySize = MAX;
-const margin = 50;
+const margin = 100;
 const xMax = xSize - margin*2;
 const yMax = ySize - margin*2;
 
@@ -25,8 +26,8 @@ const line = d3.line()
   .x(d => x(d[0]))
   .y(d => y(d[1]))
 
-const data1 = [[0,300],[600,0]]
-const data2 = [[0,600],[300,0]]
+const data1 = [[0,maxVal/2],[maxVal,0]]
+const data2 = [[0,maxVal],[maxVal/2,0]]
 
 // X Axis scaling function
 const x = d3.scaleLinear()
@@ -47,7 +48,7 @@ const y = d3.scaleLinear()
   .domain([yMax, 0])
   .range([0, ySize]);
 
-const next_point = point => [0.5*(MAX-point[1]),0.5*(MAX-point[0])];
+const next_point = point => [0.5*(maxVal-point[1]),0.5*(maxVal-point[0])];
 
 // Append SVG Object to the Page
 const svg = d3.select("#myPlot")
@@ -59,6 +60,24 @@ const svg = d3.select("#myPlot")
 svg.append("g")
   .attr("transform", `translate(0,${yMax})`)
   .call(d3.axisBottom(x).tickFormat(""));
+
+svg.append("text")
+    .attr("x",340)
+    .attr("y",655)
+//    .attr("style","font-weight:bold")
+    .text("((M-c)/3, (M-c)/3)");
+
+
+svg.append("text").text("q2")      .attr("x",-30).attr("y",  6).attr("style","font-weight:bold");
+svg.append("text").text("M-c")     .attr("x",-40).attr("y", 38);
+svg.append("text").text("(M-c)/2") .attr("x",-65).attr("y",248);
+svg.append("text").text("q1")      .attr("x",440).attr("y",474).attr("style","font-weight:bold");
+svg.append("text").text("M-c")     .attr("x",400).attr("y",474);
+svg.append("text").text("(M-c)/2") .attr("x",180).attr("y",474);
+svg.append("text").text("B1")      .attr("x", 40).attr("y",100).attr("style","font-weight:bold");
+svg.append("text").text("B2")      .attr("x",350).attr("y",410).attr("style","font-weight:bold");
+
+
 
 svg.append("g")
   .call(d3.axisLeft(y).tickFormat(""));
@@ -124,6 +143,13 @@ const drawPath = function(point) {
     .delay((d, i) => animDuration * cumulLen[i]/totalLen) // Adjust for timing
     .duration(300)
     .attr("r", 4);
+
+  const limit = svg.append("text").text("((M-c)/3,(M-c)/3)").attr("x",160)
+                   .attr("y",310).attr("class","convergence").style("opacity",0)
+
+  limit.transition()
+       .duration(animDuration*1.0)
+       .style("opacity",0).transition().duration(800).style("opacity",1);
 }
 
 
@@ -133,7 +159,7 @@ d3.select("#myPlot")
     { var pos = d3.pointer(event,"#myPlot");
       var start = [x.invert(pos[0]-margin-8),y.invert(pos[1]-margin-8)];
 
-      if(start[0] < 0 | start[0] > MAX | start[1] < 0 | start[1] > MAX)
+      if(start[0] < 0 | start[0] > maxVal | start[1] < 0 | start[1] > maxVal)
       {
         return;
       }
