@@ -7,8 +7,9 @@
 <svg id="myPlot" style="width:650px;height:650px"></svg>
 
 <script>
-animDuration = 4000 //milliseconds
+const animDuration = 4000 //milliseconds
 
+const license = 'Released under CC0 by 67hit on github';
 
 // M - c
 const MAX = 650
@@ -77,6 +78,7 @@ svg.append("text").text("(M-c)/2") .attr("x",180).attr("y",474);
 svg.append("text").text("B1(q2)")  .attr("x", 40).attr("y",100).attr("style","font-weight:bold");
 svg.append("text").text("B2(q1)")  .attr("x",350).attr("y",410).attr("style","font-weight:bold");
 
+svg.append("text").text(license)   .attr("x",320).attr("y",490).attr("style","font-size:xx-small");
 
 
 svg.append("g")
